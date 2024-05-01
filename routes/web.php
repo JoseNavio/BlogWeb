@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +15,12 @@ use App\Http\Controllers\UserController;
 
 //php artisan view:clear to clear the cache
 
-Route::get('/', [ExampleController::class,'homePage']);
+Route::get('/', [UserController::class,'showCorrectHomePage']) ;
 
-Route::get('/about', [ExampleController::class,'aboutPage']);
+Route::get('/about', [UserController::class,'aboutPage']);
 
 Route::post('/register', [UserController::class,'register']);
+
+Route::post('/login', [UserController::class,'login']);
+
+Route::post('/logout', [UserController::class,'logout']);
