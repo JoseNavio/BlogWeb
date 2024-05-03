@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,12 +17,13 @@ use App\Http\Controllers\UserController;
 
 //php artisan view:clear to clear the cache
 
+//User related routes
 Route::get('/', [UserController::class,'showCorrectHomePage']) ;
-
 Route::get('/about', [UserController::class,'aboutPage']);
-
 Route::post('/register', [UserController::class,'register']);
-
 Route::post('/login', [UserController::class,'login']);
-
 Route::post('/logout', [UserController::class,'logout']);
+
+//Blog post routes
+Route::get('/show-form',[PostController::class,'showForm']);
+Route::post('/create-post',[PostController::class,'storePost']);

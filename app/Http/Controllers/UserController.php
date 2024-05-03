@@ -31,7 +31,7 @@ class UserController extends Controller
         $user = User::create($incomingFields);
         //Log the user in after registration
         auth()->login($user);
-        
+         
         return redirect("/")->with("success", "Congratulations! You are registered.");
     }
 
