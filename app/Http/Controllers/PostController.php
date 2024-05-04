@@ -24,8 +24,15 @@ class PostController extends Controller
         $incomingFields['content'] = strip_tags($incomingFields['content']);
         $incomingFields['user_id'] = auth()->id();
 
-        Post::create($incomingFields);
+        $newPost = Post::create($incomingFields);
 
-        return redirect('/')->with('success', 'Post created successfully!');
+        return redirect("/post/{$newPost->id}")->with('success', 'Post successfully created.');
     }
+
+    //It has to be called the same than in the web route "post", and if you add the Post model, it will automatically get the post with that id
+    public function showPost(Post $post)
+    {
+        return view('post', ['post' => $post]);
+    }
+
 }
