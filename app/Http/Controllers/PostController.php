@@ -10,6 +10,10 @@ class PostController extends Controller
 {
     public function showForm()
     {
+        //In case you are not using the auth middleware
+        // if (!auth()->check()) {
+        //     return redirect('/');
+        // }
         return view('post-form');
     }
 
@@ -40,6 +44,17 @@ class PostController extends Controller
         $post["content"] = strip_tags(Str::markdown($post->content), '<p><h1><h2><h3><h4><h5><h6><strong><em><ul><ol><li><blockquote><code><pre><img><br><hr>');
 
         return view('post', ['post' => $post]);
+    }
+
+
+    public function deletePost(Post $post)
+    {
+        if(auth()->user()->cannot('delete', $post)){
+            //You can check this using browser inspector and changing the id of the post to be deleted...
+            return 'You are not allowed to delete this post.';
+        }
+        $post->delete();
+        return redirect('/profile/' . auth()->user()->username)->with('success', 'Post successfully deleted.');
     }
 
 }

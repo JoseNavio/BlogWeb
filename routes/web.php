@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use Symfony\Component\HttpKernel\Profiler\Profile;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,13 +20,18 @@ use App\Http\Controllers\UserController;
 //php artisan view:clear to clear the cache
 
 //User related routes
-Route::get('/', [UserController::class,'showCorrectHomePage']) ;
-Route::get('/about', [UserController::class,'aboutPage']);
-Route::post('/register', [UserController::class,'register']);
-Route::post('/login', [UserController::class,'login']);
-Route::post('/logout', [UserController::class,'logout']);
+Route::get('/', [UserController::class,'showCorrectHomePage'])->name('home') ;
+Route::post('/register', [UserController::class,'register'])->middleware('guest');
+Route::post('/login', [UserController::class,'login'])->middleware('guest');
+Route::post('/logout', [UserController::class,'logout'])->middleware('auth');
 
 //Blog post routes
-Route::get('/show-form',[PostController::class,'showForm']);
+//I change middleware auth file to redirect to home instead and name the route '/' as home
+Route::get('/show-form',[PostController::class,'showForm'])->middleware('auth');
 Route::get('/post/{post}',[PostController::class,'showPost']);
-Route::post('/create-post',[PostController::class,'storePost']);
+Route::post('/store-post',[PostController::class,'storePost'])->middleware('auth');
+Route::delete('/post/{post}',[PostController::class,'deletePost']);
+
+//Profile related routes
+//(user:username) So it will look for the username in the User model and not the id 
+Route::get('/profile/{user:username}', [ProfileController::class,'showProfile'])->middleware('auth');
