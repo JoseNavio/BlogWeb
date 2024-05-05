@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -19,7 +20,7 @@ class PostController extends Controller
             'title' => 'required|max:100',
             'content' => 'required',
         ]);
-        //Drop any PHP or HTML tags from text...
+        //Drop any PHP or HTML tags from text... Avoid XSS attacks...
         $incomingFields['title'] = strip_tags($incomingFields['title']);
         $incomingFields['content'] = strip_tags($incomingFields['content']);
         $incomingFields['user_id'] = auth()->id();
@@ -29,9 +30,15 @@ class PostController extends Controller
         return redirect("/post/{$newPost->id}")->with('success', 'Post successfully created.');
     }
 
-    //It has to be called the same than in the web route "post", and if you add the Post model, it will automatically get the post with that id
+    //It has to be called the same than in the web route "post" , and if you add the Post model, it will automatically get the post with that id
     public function showPost(Post $post)
     {
+        //Markdown support
+        //$post["content"] =  Str::markdown($post->content);
+
+        //In case you dont't want links... Allowed tags...
+        $post["content"] = strip_tags(Str::markdown($post->content), '<p><h1><h2><h3><h4><h5><h6><strong><em><ul><ol><li><blockquote><code><pre><img><br><hr>');
+
         return view('post', ['post' => $post]);
     }
 

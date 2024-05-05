@@ -17,7 +17,8 @@
         </p>
   
         <div class="body-content">
-          {{$post->content}}
+          <!--Render content as HTML so post can support Markdown(Dangerous)-->
+          {!! $post->content !!}
         </div>
       </div>
 
