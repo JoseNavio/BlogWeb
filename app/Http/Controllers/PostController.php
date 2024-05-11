@@ -22,7 +22,7 @@ class PostController extends Controller
 
         $incomingFields = $request->validate([
             'title' => 'required|max:100',
-            'content' => 'required',
+            'content' => 'required'
         ]);
         //Drop any PHP or HTML tags from text... Avoid XSS attacks...
         $incomingFields['title'] = strip_tags($incomingFields['title']);
@@ -32,6 +32,21 @@ class PostController extends Controller
         $newPost = Post::create($incomingFields);
 
         return redirect("/post/{$newPost->id}")->with('success', 'Post successfully created.');
+    }
+    //Should be more or less the same than storePost...
+    public function updatePost(Request $request, Post $post)
+    {
+        $incomingFields = $request->validate([
+            'title' => 'required|max:100',
+            'content' => 'required'
+        ]);
+        $incomingFields['title'] = strip_tags($incomingFields['title']);
+        $incomingFields['content'] = strip_tags($incomingFields['content']);
+
+        $post->update($incomingFields);
+
+        //return back()->with('success', 'Post successfully updated.');
+        return redirect("/post/{$post->id}")->with('success', 'Post successfully updated.');
     }
 
     //It has to be called the same than in the web route "post" , and if you add the Post model, it will automatically get the post with that id
@@ -46,15 +61,20 @@ class PostController extends Controller
         return view('post', ['post' => $post]);
     }
 
-
+ 
     public function deletePost(Post $post)
     {
-        if(auth()->user()->cannot('delete', $post)){
-            //You can check this using browser inspector and changing the id of the post to be deleted...
-            return 'You are not allowed to delete this post.';
-        }
+        // if(auth()->user()->cannot('delete', $post)){
+        //     //You can check this using browser inspector and changing the id of the post to be deleted...
+        //     return 'You are not allowed to delete this post.';
+        // }
         $post->delete();
         return redirect('/profile/' . auth()->user()->username)->with('success', 'Post successfully deleted.');
+    }
+
+    public function showEditForm(Post $post)
+    {
+        return view('edit-post', ['post' => $post]);
     }
 
 }

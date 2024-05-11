@@ -37,6 +37,11 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
+        //If the user is an admin, God mode...
+        if ($user->is_admin === 1) {
+            return true;
+        }
+
         //Remember to add the policy to the provider in Providers/AuthServiceProvider
         return $user->id === $post->user_id;
     }
@@ -46,6 +51,12 @@ class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
+
+        //If the user is an admin, God mode...
+        if ($user->is_admin === 1) {
+            return true;
+        }
+
         return $user->id === $post->user_id;
     }
 
